@@ -4,21 +4,26 @@ import 'package:inject/src/error.dart';
 typedef Factory<T> = T Function(DependencyContainer container);
 
 abstract class DependencyContainer {
-  T get<T>({String key = ""});
+  T get<T>({String key});
 }
+
+const _DEFAULT_RESOURCE_KEY =
+    "internal default resource key, should never conflict with anything a user ever provides. Lol If you hit this";
 
 class DependencyContainerBuilder {
   FactoryRegistry registry = FactoryRegistry();
 
-  void withFactory<T>(Factory<T> factory, {String key = ""}) {
+  void withFactory<T>(Factory<T> factory,
+      {String key = _DEFAULT_RESOURCE_KEY}) {
     registry.registerFactory<T>(key, factory);
   }
 
-  void withSingleton<T>(T value, {String key = ""}) {
+  void withSingleton<T>(T value, {String key = _DEFAULT_RESOURCE_KEY}) {
     registry.registerFactory<T>(key, (_) => value);
   }
 
-  void withLazySingleton<T>(Factory<T> factory, {String key = ""}) {
+  void withLazySingleton<T>(Factory<T> factory,
+      {String key = _DEFAULT_RESOURCE_KEY}) {
     registry.registerFactory<T>(key, _FactoryUtils.memo(factory));
   }
 
@@ -53,7 +58,7 @@ class _DependencyContainerImpl implements DependencyContainer {
   _DependencyContainerImpl(this._factoryRegistry);
 
   @override
-  T get<T>({String key = ""}) {
+  T get<T>({String key = _DEFAULT_RESOURCE_KEY}) {
     Factory<T>? factory = _factoryRegistry.getFactory<T>(key);
     if (factory == null) {
       throw UnknownFactoryError(
