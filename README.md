@@ -32,8 +32,7 @@ class C {
 }
 
 void main() {
-  test('example', ()
-  {
+  test('example', () {
     DependencyContainerBuilder containerBuilder = DependencyContainerBuilder()
       ..withSingleton("our-super-secret-api-key", key: "api-key")
       ..withSingleton(5, key: "api-key-expiry-days")

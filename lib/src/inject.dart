@@ -1,4 +1,3 @@
-import 'package:inject/inject.dart';
 import 'package:inject/src/error.dart';
 
 typedef Factory<T> = T Function(DependencyContainer container);
