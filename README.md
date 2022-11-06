@@ -1,39 +1,56 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A nofrills DI container for Dart that does not use reflection, rather taking advantage of reified generics.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- support for both sync and async factories
+- support for lazy loading singletons
+- support for keys  (ie multiple instances of the same type, de-duped by key)
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+import 'package:inject/inject.dart';
+import 'package:test/test.dart';
+
+class A {
+  final String name;
+
+  A(this.name);
+}
+
+class B {
+  final A a;
+
+  B(this.a);
+}
+
+class C {
+  final A a;
+  final B b;
+
+  C(this.a, this.b);
+}
+
+void main() {
+  test('example', ()
+  {
+    DependencyContainerBuilder containerBuilder = DependencyContainerBuilder()
+      ..withSingleton("our-super-secret-api-key", key: "api-key")
+      ..withSingleton(5, key: "api-key-expiry-days")
+      ..withLazySingleton((container) => A(container.get<String>(key: "api-key")))
+      ..withFactory((container) => B(container.get<A>()))
+      ..withFactory((container) => C(container.get<A>(), container.get<B>()));
+
+    DependencyContainer container = containerBuilder.build();
+
+    C c1 = container.get<C>();
+    C c2 = container.get<C>();
+
+    expect(c1 == c2, isFalse);
+    expect(c1.b == c2.b, isFalse);
+    expect(c1.a == c2.a, isTrue);
+    expect(c1.a == c1.b.a, isTrue);
+  });
+}
+
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
