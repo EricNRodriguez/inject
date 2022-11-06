@@ -37,13 +37,13 @@ void main() {
       ..withSingleton("our-super-secret-api-key", key: "api-key")
       ..withSingleton(5, key: "api-key-expiry-days")
       ..withLazySingleton((container) => A(container.get<String>(key: "api-key")))
-      ..withFactory((container) => B(container.get<A>()))
-      ..withFactory((container) => C(container.get<A>(), container.get<B>()));
+      ..withFactory((container) => B(container<A>()))
+      ..withFactory((container) => C(container<A>(), container<B>()));
 
     DependencyContainer container = containerBuilder.build();
 
-    C c1 = container.get<C>();
-    C c2 = container.get<C>();
+    C c1 = container<C>();
+    C c2 = container<C>();
 
     expect(c1 == c2, isFalse);
     expect(c1.b == c2.b, isFalse);

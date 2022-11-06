@@ -3,7 +3,7 @@ import 'package:inject/src/error.dart';
 typedef Factory<T> = T Function(DependencyContainer container);
 
 abstract class DependencyContainer {
-  T get<T>({String key});
+  T call<T>({String key});
 }
 
 const _DEFAULT_RESOURCE_KEY =
@@ -57,7 +57,7 @@ class _DependencyContainerImpl implements DependencyContainer {
   _DependencyContainerImpl(this._factoryRegistry);
 
   @override
-  T get<T>({String key = _DEFAULT_RESOURCE_KEY}) {
+  T call<T>({String key = _DEFAULT_RESOURCE_KEY}) {
     Factory<T>? factory = _factoryRegistry.getFactory<T>(key);
     if (factory == null) {
       throw UnknownFactoryError(

@@ -5,11 +5,11 @@ class A {
   final String name;
 
   static A buildWithEric(DependencyContainer container) {
-    return A(container.get<String>(key: "eric"));
+    return A(container<String>(key: "eric"));
   }
 
   static A buildWithCarl(DependencyContainer container) {
-    return A(container.get<String>(key: "carl"));
+    return A(container<String>(key: "carl"));
   }
 
   static A buildWithNone(DependencyContainer container) {
@@ -28,7 +28,7 @@ class B {
   final A a;
 
   static B build(DependencyContainer container) {
-    return B(container.get<A>());
+    return B(container<A>());
   }
 
   B(this.a);
@@ -44,15 +44,15 @@ class C {
   final B? b;
 
   static C buildWithCarlA(DependencyContainer container) {
-    return C(container.get<A>(key: "carl"), container.get<B>());
+    return C(container<A>(key: "carl"), container<B>());
   }
 
   static C buildWithEricA(DependencyContainer container) {
-    return C(container.get<A>(key: "eric"), container.get<B>());
+    return C(container<A>(key: "eric"), container<B>());
   }
 
   static Future<C> buildAsync(DependencyContainer container) {
-    return Future.value(C(container.get<A>(), container.get<B>()));
+    return Future.value(C(container<A>(), container<B>()));
   }
 
   C(this.a, this.b);
@@ -86,13 +86,13 @@ void main() {
 
     DependencyContainer container = builder.build();
 
-    C c1 = container.get<C>(key: "carl");
-    C c2 = container.get<C>(key: "carl");
+    C c1 = container<C>(key: "carl");
+    C c2 = container<C>(key: "carl");
 
     print(c1.a == c2.a);
 
-    C c3 = container.get<C>(key: "eric");
-    C c4 = container.get<C>(key: "eric");
+    C c3 = container<C>(key: "eric");
+    C c4 = container<C>(key: "eric");
 
     print(c3.a == c4.a);
   });
